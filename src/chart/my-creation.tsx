@@ -1,10 +1,10 @@
-"use client"
+// "use client"
 
 import * as React from "react"
 import {Area, AreaChart, CartesianGrid, XAxis} from "recharts"
 
-import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, query, limitToLast, onValue } from 'firebase/database';
+import { database } from '@/firebase/FirebaseConfig';
+import { ref, query, limitToLast, onValue } from 'firebase/database';
 
 import {
     Card,
@@ -31,40 +31,18 @@ import {
 import {useEffect, useState} from "react";
 
 const chartConfig = {
-    visitors: {
-        label: "Visitors",
-    },
-    desktop: {
-        label: "Desktop",
-        color: "hsl(var(--chart-1))",
-    },
-    mobile: {
-        label: "Mobile",
+    quality: {
+        label: "Quality",
         color: "hsl(var(--chart-2))",
     },
 } satisfies ChartConfig
-
-// Firebase Configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyD-u9e_fGVyBVg0kOPxA-PlItqLzEO-4xw",
-    authDomain: "esp32-2024-proiect.firebaseapp.com",
-    databaseURL: "https://esp32-2024-proiect-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "esp32-2024-proiect",
-    storageBucket: "esp32-2024-proiect.appspot.com",
-    messagingSenderId: "154530232776",
-    appId: "1:154530232776:web:c4b2cfefba49adbc22e8fd",
-    measurementId: "G-05G1TQDRBE",
-};
-
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
 
 interface DataPoint {
     timestamp: number;
     quality: number;
 }
 
-function Database() {
+function useDatabase() {
     const [data, setData] = useState<DataPoint[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -88,41 +66,46 @@ function Database() {
         return () => unsubscribe();
     }, []);
 
-    console.log(data);
-
-    return data;
+    console.log("Data is :")
+    console.log(data)
+    return { data, loading };
 }
 
 export function MyCreation() {
-    const [timeRange, setTimeRange] = React.useState("90d")
 
-    const myFiltered = Database().filter((item) => {
-        const referenceDate = new Date(); // Use the current date and time
-        let daysToSubtract = 90;
 
-        if (timeRange === "30d") {
-            daysToSubtract = 30;
-        } else if (timeRange === "7d") {
-            daysToSubtract = 7;
-        }
+    const { data, loading } = useDatabase();
+    const [timeRange, setTimeRange] = React.useState("90d");
 
-        // Calculate the start date in milliseconds
-        const startDate = new Date(referenceDate);
-        startDate.setDate(startDate.getDate() - daysToSubtract);
-        const startDateTimestamp = startDate.getTime();
+    if (loading) {
+        return <p>Loading...</p>; // Show a loading state while fetching data
+    }
 
-        return item.timestamp >= startDateTimestamp;
-    })
+    const myFiltered = data.filter((item) => {
+        // const referenceDate = new Date(); // Current date
+        // let daysToSubtract = 90;
+        //
+        // if (timeRange === "30d") {
+        //     daysToSubtract = 30;
+        // } else if (timeRange === "7d") {
+        //     daysToSubtract = 7;
+        // }
+        //
+        // const startDate = new Date(referenceDate);
+        // startDate.setDate(startDate.getDate() - daysToSubtract);
+        //
+        // const itemDate = new Date(item.timestamp).getTime();
+        // return itemDate >= startDate.getTime();
+        return true;
+    });
 
     return (
         <Card>
-
-            {/*Header of the card*/}
             <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
                 <div className="grid flex-1 gap-1 text-center sm:text-left">
                     <CardTitle>Area Chart - Interactive</CardTitle>
                     <CardDescription>
-                        Showing total visitors for the last 3 months
+                        Showing total visitors for the last {timeRange}.
                     </CardDescription>
                 </div>
                 <Select value={timeRange} onValueChange={setTimeRange}>
@@ -146,39 +129,23 @@ export function MyCreation() {
                 </Select>
             </CardHeader>
 
-            {/*Content of the card*/}
             <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
                 <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
-
-                    <AreaChart data={myFiltered}>
+                    <AreaChart data={data}>
                         <defs>
-                            <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
+                            <linearGradient id="fillQuality" x1="0" y1="0" x2="0" y2="1">
                                 <stop
                                     offset="5%"
-                                    stopColor="var(--color-desktop)"
+                                    stopColor="var(--color-quality)"
                                     stopOpacity={0.8}
                                 />
                                 <stop
                                     offset="95%"
-                                    stopColor="var(--color-desktop)"
-                                    stopOpacity={0.1}
-                                />
-                            </linearGradient>
-
-                            <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
-                                <stop
-                                    offset="5%"
-                                    stopColor="var(--color-mobile)"
-                                    stopOpacity={0.8}
-                                />
-                                <stop
-                                    offset="95%"
-                                    stopColor="var(--color-mobile)"
+                                    stopColor="var(--color-quality)"
                                     stopOpacity={0.1}
                                 />
                             </linearGradient>
                         </defs>
-
                         <CartesianGrid vertical={false} />
                         <XAxis
                             dataKey="timestamp"
@@ -187,22 +154,22 @@ export function MyCreation() {
                             tickMargin={8}
                             minTickGap={32}
                             tickFormatter={(value) => {
-                                const date = new Date(value)
+                                const date = new Date(value);
                                 return date.toLocaleDateString("en-US", {
                                     month: "short",
                                     day: "numeric",
                                     hour: "2-digit",
                                     minute: "2-digit",
-                                })
+                                });
                             }}
                         />
-
                         <ChartTooltip
                             cursor={false}
                             content={
                                 <ChartTooltipContent
                                     labelFormatter={(value) => {
-                                        return new Date(value).toLocaleDateString("en-US", {
+                                        console.log(value);
+                                        return new Date(Number(value)).toLocaleDateString("en-US", {
                                             month: "short",
                                             day: "numeric",
                                         })
@@ -211,12 +178,11 @@ export function MyCreation() {
                                 />
                             }
                         />
-
                         <Area
                             dataKey="quality"
                             type="natural"
-                            fill="url(#fillMobile)"
-                            stroke="var(--color-mobile)"
+                            fill="url(#fillQuality)"
+                            stroke="var(--color-quality)"
                             stackId="a"
                         />
 
@@ -225,5 +191,5 @@ export function MyCreation() {
                 </ChartContainer>
             </CardContent>
         </Card>
-    )
+    );
 }
