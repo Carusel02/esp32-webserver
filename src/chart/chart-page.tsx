@@ -1,6 +1,5 @@
-import { ThemeProvider} from "@/components/theme/theme-provider.tsx";
 import { ModeToggle } from "@/components/theme/mode-toggle.tsx";
-import {MyCreation} from "@/chart/my-creation.tsx";
+import {RealTimeChart} from "@/chart/real-time-chart.tsx";
 import {
     Card,
     CardContent,
@@ -12,26 +11,23 @@ import {
 function App() {
 
     return (
-        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-
             <div className="items-center w-screen">
+                {/* add toggle button in right corner */}
+                <div className="fixed top-4 right-4 z-50">
+                    <ModeToggle/>
+                </div>
+
                 <Card>
                     <CardHeader>
-                        <CardTitle >Real-Time CO2 Levels</CardTitle>
+                        <CardTitle>Real-Time CO2 Levels</CardTitle>
                         <CardDescription>Air Quality Dashboard</CardDescription>
-                        <ModeToggle/>
                     </CardHeader>
                     <CardContent>
-                        {/*<ShadcnChart/>*/}
-                        {/*<RealTimeChart/>*/}
-                        <MyCreation/>
+                        <RealTimeChart/>
                     </CardContent>
                 </Card>
             </div>
-
-
-        </ThemeProvider>
 );
-};
+}
 
 export default App;

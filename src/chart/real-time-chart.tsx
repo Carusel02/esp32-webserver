@@ -1,9 +1,7 @@
-// "use client"
-
 import * as React from "react"
 import {Area, AreaChart, CartesianGrid, XAxis} from "recharts"
 
-import { database } from '@/firebase/FirebaseConfig';
+import { database } from '@/auth/firebase-auth';
 import { ref, query, limitToLast, onValue } from 'firebase/database';
 
 import {
@@ -71,7 +69,7 @@ function useDatabase() {
     return { data, loading };
 }
 
-export function MyCreation() {
+export function RealTimeChart() {
 
 
     const { data, loading } = useDatabase();
@@ -81,23 +79,23 @@ export function MyCreation() {
         return <p>Loading...</p>; // Show a loading state while fetching data
     }
 
-    const myFiltered = data.filter((item) => {
-        // const referenceDate = new Date(); // Current date
-        // let daysToSubtract = 90;
-        //
-        // if (timeRange === "30d") {
-        //     daysToSubtract = 30;
-        // } else if (timeRange === "7d") {
-        //     daysToSubtract = 7;
-        // }
-        //
-        // const startDate = new Date(referenceDate);
-        // startDate.setDate(startDate.getDate() - daysToSubtract);
-        //
-        // const itemDate = new Date(item.timestamp).getTime();
-        // return itemDate >= startDate.getTime();
-        return true;
-    });
+    // const myFiltered = data.filter((item) => {
+    //     // const referenceDate = new Date(); // Current date
+    //     // let daysToSubtract = 90;
+    //     //
+    //     // if (timeRange === "30d") {
+    //     //     daysToSubtract = 30;
+    //     // } else if (timeRange === "7d") {
+    //     //     daysToSubtract = 7;
+    //     // }
+    //     //
+    //     // const startDate = new Date(referenceDate);
+    //     // startDate.setDate(startDate.getDate() - daysToSubtract);
+    //     //
+    //     // const itemDate = new Date(item.timestamp).getTime();
+    //     // return itemDate >= startDate.getTime();
+    //     return true;
+    // });
 
     return (
         <Card>

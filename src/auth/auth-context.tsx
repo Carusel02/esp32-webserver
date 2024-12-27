@@ -6,12 +6,14 @@ const AuthContext = createContext({
     currentUser: null, // Default state
 });
 
+// @ts-expect-error Ignore TypeScript error
 export function AuthProvider({ children }) {
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
+            // @ts-expect-error Ignore TypeScript error
             setCurrentUser(user);
             setLoading(false);
         });
