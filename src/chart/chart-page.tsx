@@ -15,7 +15,7 @@ function App() {
 
             <div className="items-center w-screen">
                 {/* add toggle button in right corner */}
-                <div className="fixed top-4 right-4 z-50">
+                <div className="top-4 right-4 z-50">
                     <ModeToggle/>
                 </div>
 
