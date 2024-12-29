@@ -136,13 +136,14 @@ const ChartTooltipContent = React.forwardRef<
         return null
       }
 
-      const [item] = payload
-      const key = `${labelKey || item.dataKey || item.name || "value"}`
-      const itemConfig = getPayloadConfigFromPayload(config, item, key)
-      const value =
+      // const [item] = payload
+      // const key = `${labelKey || item.dataKey || item.name || "value"}`
+      // const itemConfig = getPayloadConfigFromPayload(config, item, key)
+
+        const value =
         !labelKey && typeof label === "string"
           ? config[label as keyof typeof config]?.label || label
-          : itemConfig?.label
+          : payload[0].payload.timestamp
 
       if (labelFormatter) {
         return (
@@ -334,19 +335,29 @@ function getPayloadConfigFromPayload(
   let configLabelKey: string = key
 
   if (
-    key in payload &&
-    typeof payload[key as keyof typeof payload] === "string"
+    key in payload // &&
+    // typeof payload[key as keyof typeof payload] === "string"
   ) {
     configLabelKey = payload[key as keyof typeof payload] as string
   } else if (
     payloadPayload &&
-    key in payloadPayload &&
-    typeof payloadPayload[key as keyof typeof payloadPayload] === "string"
+    key in payloadPayload // &&
+    // typeof payloadPayload[key as keyof typeof payloadPayload] === "string"
   ) {
     configLabelKey = payloadPayload[
       key as keyof typeof payloadPayload
     ] as string
+      // console.log("Key is in PAYLOAD " + configLabelKey)
   }
+
+  // if(configLabelKey in config){
+  //   console.log("Key is in config")
+  //     console.log(config[configLabelKey])
+  // } else {
+  //   console.log("Key is not in config")
+  //     console.log(config[key as keyof typeof config])
+  // }
+
 
   return configLabelKey in config
     ? config[configLabelKey]
