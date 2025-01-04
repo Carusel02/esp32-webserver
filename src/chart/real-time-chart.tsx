@@ -27,6 +27,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import {useEffect, useState} from "react";
+import ButtonLoading from "@/chart/loading-button.tsx";
 
 const chartConfig = {
     quality: {
@@ -78,7 +79,9 @@ export function RealTimeChart() {
     const [timeRange, setTimeRange] = React.useState("7d");
 
     if (loading) {
-        return <p>Loading...</p>; // Show a loading state while fetching data
+        return <div className="flex items-center justify-center">
+            <ButtonLoading/>
+        </div>; // Show a loading state while fetching data
     }
 
     const filteredData = data.filter((item) => {
