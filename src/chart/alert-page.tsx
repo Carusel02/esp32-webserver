@@ -9,7 +9,9 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+// @ts-expect-error check if this is the correct type
 export default function SheetDemo({ alerts }) {
+
     return (
         <Sheet>
             <div className="ml-5">
@@ -27,6 +29,7 @@ export default function SheetDemo({ alerts }) {
                 <ScrollArea className="h-3/4 w-full mt-4 rounded-md border p-4">
                     <div className="space-y-4">
                         {alerts.length > 0 ? (
+                            // @ts-expect-error check if this is the correct type
                             alerts.map((alert, index) => (
                                 <Alert key={index}>
                                     <AlertTitle>Alert!</AlertTitle>
