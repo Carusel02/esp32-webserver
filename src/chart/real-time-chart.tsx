@@ -68,8 +68,6 @@ function useDatabase() {
         return () => unsubscribe();
     }, []);
 
-    // console.log("Data is :")
-    // console.log(data)
     return { data, loading };
 }
 
