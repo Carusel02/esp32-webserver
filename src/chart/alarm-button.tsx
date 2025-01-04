@@ -1,10 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { database } from '@/auth/firebase-auth';
-import { ref, set } from 'firebase/database';
+import { database } from '@/auth/firebase-auth'; // Import your Firebase database instance
+import { ref, set, onValue } from 'firebase/database';
 
 export default function AlarmButton() {
     const [isAlarmOn, setIsAlarmOn] = useState(false);
+
+    // Fetch the current trigger value from Firebase on component mount
+    useEffect(() => {
+        const triggerRef = ref(database, 'trigger');
+        const unsubscribe = onValue(triggerRef, (snapshot) => {
+            const triggerValue = snapshot.val();
+            setIsAlarmOn(!!triggerValue); // Ensure it is a boolean
+        });
+
+        return () => unsubscribe(); // Cleanup the listener when the component unmounts
+    }, []);
 
     // Function to update the trigger value in Firebase
     const updateTriggerInFirebase = (value: unknown) => {
@@ -18,6 +29,7 @@ export default function AlarmButton() {
             });
     };
 
+    // Toggle the alarm state
     const toggleAlarm = () => {
         const newAlarmState = !isAlarmOn;
         setIsAlarmOn(newAlarmState);
@@ -37,3 +49,4 @@ export default function AlarmButton() {
         </Button>
     );
 }
+
